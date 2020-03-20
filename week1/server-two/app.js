@@ -1,8 +1,18 @@
-const express = require("express");
-const app = express();
+//const express = require("express");
+//const app = express();
 const port = 3000;
+const pug = require("pug");
 
-app.use(express.static("public"));
+// Compile the source code
+const compiledFunction = pug.compileFile("public");
+
+// Render a set of data
+console.log(
+  compiledFunction({
+    name: "Timothy"
+  })
+);
+//app.use(express.static("public"));
 app.get("/", (req, res) => res.send("Hello World!"));
 app.get("/catinfo", (req, res) => {
   const cat = {
