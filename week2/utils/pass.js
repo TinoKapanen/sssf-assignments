@@ -1,6 +1,9 @@
 "use strict";
 const passport = require("passport");
 const Strategy = require("passport-local").Strategy;
+const passportJWT = require("passport-jwt");
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 const userModel = require("../models/userModel");
 
 // local strategy for username password login
@@ -23,16 +26,25 @@ passport.use(
   }),
 
   // TODO: JWT strategy for handling bearer token
-  function(jwtPayload, done) {
-    //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-    return UserModel.findOneById(jwtPayload.id)
-      .then(user => {
-        return done(null, user);
-      })
-      .catch(err => {
-        return done(err);
-      });
-  }
+  passport.use(
+    new JWTStrategy(
+      {
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: "your_jwt_secret"
+      },
+
+      function(jwtPayload, done) {
+        //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
+        return UserModel.findOneById(jwtPayload.id)
+          .then(user => {
+            return done(null, user);
+          })
+          .catch(err => {
+            return done(err);
+          });
+      }
+    )
+  )
 );
 
 module.exports = passport;
