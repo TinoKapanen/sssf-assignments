@@ -15,9 +15,6 @@ app.get('/', async (req, res) => {
 
 app.post('/cat', async(req, res) => {
   const mycat = await cat.create({ name: 'garfield', age: 7, owner: '5e7b0ae1f304f22815649e05' });
-  //const myuser = find
-  //myuser.cats.push(mycat._id);
-  //save()
   res.send(`cat created with id: ${mycat._id}`);
 });
 
