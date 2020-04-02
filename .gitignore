@@ -106,3 +106,6 @@ dist
 .tern-port
 
 *.lock
+NoSQL_tasks/db/journal/WiredTigerLog.0000000001
+NoSQL_tasks/db/journal/WiredTigerPreplog.0000000001
+NoSQL_tasks/db/journal/WiredTigerPreplog.0000000002
