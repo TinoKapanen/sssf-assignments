@@ -1,7 +1,13 @@
 'use strict';
  
- const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList, GraphQLSchema} = require(
-     'graphql');
+ const {
+     GraphQLObjectType, 
+     GraphQLID, 
+     GraphQLString, 
+     GraphQLList, 
+     GraphQLSchema,
+     GraphQLNonNull,
+    } = require('graphql');
  
  const animalData = [
    {
@@ -82,12 +88,22 @@
    description: 'Main query',
    fields: {
      animals: {
-       type: new GraphQLList(animalType),
+       type: new GraphQLNonNull(new GraphQLList(animalType)),
        description: 'Get all animals',
-       resolve(parent, args) {
+       resolve: (parent, args) => {
          return animalData;
        },
      },
+     animal: {
+         type: animalType,
+         description: 'Get animal by id',
+         args: {
+             id: {type: new GraphQLNonNull(GraphQLID)},
+         },
+         resolve: (parent, args) => {
+             return animalData;
+         }
+     }
    },
  });
  
