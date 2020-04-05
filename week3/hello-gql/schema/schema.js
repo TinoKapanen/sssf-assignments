@@ -9,6 +9,11 @@
      animalName: 'Frank',
      species: '1',
    },
+   {
+       id: '2',
+       animalName: 'John',
+       species: '2',
+   }
  ];
  
  const speciesData = [
@@ -17,6 +22,11 @@
      speciesName: 'Cat',
      category: '1',
    },
+   {
+    id: '2',
+    speciesName: 'dog',
+    category: '1',
+   }
  ];
  
  const categoryData = [
@@ -32,12 +42,44 @@
    fields: () => ({
      id: {type: GraphQLID},
      animalName: {type: GraphQLString},
-     species: {type: GraphQLID},
+     species: {
+         type: speciesType,
+         resolve(parent, args){
+             //console.log(parent);
+             return speciesData.find(spe => spe.id === parent.species);
+         },
+    },
    }),
  });
+
+ const speciesType = new GraphQLObjectType({
+    name: 'species',
+    description: 'Animal species',
+    fields: () => ({
+      id: {type: GraphQLID},
+      speciesName: {type: GraphQLString},
+      category: {
+          type: categoryType,
+          resolve: (parent, args) => {
+              //console.log(parent);
+              return categoryData.find(cat => cat.id === parent.category);
+          },
+        },
+    }),
+  });
+
+  const categoryType = new GraphQLObjectType({
+    name: 'category',
+    description: 'Animal category',
+    fields: () => ({
+      id: {type: GraphQLID},
+      categoryName: {type: GraphQLString},
+    }),
+  });
  
  const RootQuery = new GraphQLObjectType({
    name: 'RootQueryType',
+   description: 'Main query',
    fields: {
      animals: {
        type: new GraphQLList(animalType),
