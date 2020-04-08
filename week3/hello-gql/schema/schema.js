@@ -104,7 +104,7 @@ const Mutation = new GraphQLObjectType({
       args: {
         categoryName: {type: new GraphQLNonNull(GraphQLString)},
       },
-      resolve: async (parent, args,{req, res, checkAuth}) => {
+      resolve: async (parent, args, {req, res, checkAuth}) => {
         try {
           checkAuth(req, res);
           const newCategory = new category(args);
@@ -122,7 +122,7 @@ const Mutation = new GraphQLObjectType({
         speciesName: {type: new GraphQLNonNull(GraphQLString)},
         category: {type: new GraphQLNonNull(GraphQLID)},
       },
-      resolve: async (parent, args,{req, res, checkAuth}) => {
+      resolve: async (parent, args, {req, res, checkAuth}) => {
         try {
           checkAuth(req, res);
           const newSpecies = new species(args);
@@ -162,13 +162,13 @@ const Mutation = new GraphQLObjectType({
       resolve: async (parent, args, {req, res, checkAuth}) => {
         try {
           checkAuth(req, res);
-          return await animal.findByIdAndUpdate(args.id, args, {new:true});
+          return await animal.findByIdAndUpdate(args.id, args, {new: true});
         }
         catch (e) {
           return new Error(e.message);
         }
       },
-    }
+    },
   },
 });
 
