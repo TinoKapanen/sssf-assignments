@@ -113,3 +113,15 @@ NoSQL_tasks/db/journal/WiredTigerLog.0000000003
 NoSQL_tasks/db/diagnostic.data/metrics.interim
 *.interim
 NoSQL_tasks/db/journal/WiredTigerLog.0000000004
+*.interim
+*.wt
+*.turtle
+*.2020-04-07T08-34-18Z-00000
+NoSQL_tasks/db/WiredTiger.turtle
+NoSQL_tasks/db/WiredTiger.wt
+NoSQL_tasks/db/sizeStorer.wt
+NoSQL_tasks/db/journal/WiredTigerLog.0000000008
+NoSQL_tasks/db/index-6--7310598360744364904.wt
+NoSQL_tasks/db/index-3--7310598360744364904.wt
+NoSQL_tasks/db/diagnostic.data/metrics.interim
+NoSQL_tasks/db/diagnostic.data/metrics.2020-04-05T16-35-01Z-00000
