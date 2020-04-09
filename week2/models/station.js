@@ -3,24 +3,24 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const stationSchema = new Schema({
-  //TODO: schema
+  Connections: [{type: mongoose.Types.ObjectId, ref: 'Connection'}],
   Title: String,
   AddressLine1: String,
   Town: String,
-  StateOrProvience: String,
+  StateOrProvince: String,
   Postcode: String,
-  Connections: [{type: Schema.Types.ObjectId, ref: 'Connection'}],
   Location: {
     type: {
-      type: String,
-      enum: ['poing'],
+      type: String, // Don't do `{ location: { type: String } }`
+      enum: ['Point'], // 'location.type' must be 'Point'
       required: true,
     },
     coordinates: {
-      type: [Number], 
+      type: [Number],
       required: true,
-    }
-  }
+      // index: { type: '2dsphere', sparse: false },
+    },
+  },
 });
 
 module.exports = mongoose.model('Station', stationSchema);
