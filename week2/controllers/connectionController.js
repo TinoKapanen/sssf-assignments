@@ -3,19 +3,27 @@ const connectionModel = require('../models/connection');
 
 const connection_list_get = async (req, res) => {
   try {
-  const connections = await connectionModel.findById(req.params.id);
-  res.json(connections);
-  } catch (e) {
-    console.error('connection_list_get', e);
+    const connections = await connectionModel.find();
+    res.json(connections);
+  }
+  catch (e) {
+    res.status(500).json({message: e.message});
+  }
+
+};
+
+const connection_get = async (req, res) => {
+  try {
+    const stations = await connectionModel.findById(req.params.id);
+    res.json(stations);
+  }
+  catch (e) {
     res.status(500).json({message: e.message});
   }
 };
 
-const connection_get = async (req, res) => {
-  res.send('With this endpoint you can get one connections');
-};
-
 const connection_post = (req, res) => {
+  console.log('connection_post', req.body);
   res.send('With this endpoint you can add connections');
 };
 
