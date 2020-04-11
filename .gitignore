@@ -125,3 +125,6 @@ NoSQL_tasks/db/index-6--7310598360744364904.wt
 NoSQL_tasks/db/index-3--7310598360744364904.wt
 NoSQL_tasks/db/diagnostic.data/metrics.interim
 NoSQL_tasks/db/diagnostic.data/metrics.2020-04-05T16-35-01Z-00000
+certrequest.csr
+ssl-key.pem
+ssl-cert.pem
