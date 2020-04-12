@@ -1,3 +1,170 @@
+'use strict';
+
+const {
+  GraphQLObjectType,
+  GraphQLInputObjectType,
+  GraphQLString,
+  GraphQLFloat,
+  GraphQLID,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLSchema,
+  GraphQLBoolean,
+  GraphQLNonNull,
+} = require(
+    'graphql');
+
+const bcrypt = require('bcrypt');
+const saltRound = 12;
+
+const authController = require('../controllers/authController');
+const rectangleBounds = require('../utils/rectangleBounds');
+
+const station = require('../models/station');
+const connection = require('../models/connection');
+const connectiontype = require('../models/connectionType');
+const currenttype = require('../models/currentType');
+const level = require('../models/level');
+const user = require('../models/user');
+
+const userType = new GraphQLObjectType({
+  name: 'user',
+  fields: () => ({
+    id: {type: GraphQLID},
+    full_name: {type: GraphQLString},
+    username: {type: GraphQLString},
+    token: {type: GraphQLString},
+  }),
+});
+
+const geoJSONType = new GraphQLObjectType({
+  name: 'geoJSON',
+  fields: () => ({
+    type: {type: GraphQLString},
+    coordinates: {type: new GraphQLList(GraphQLFloat)},
+  }),
+});
+
+const connectiontypeType = new GraphQLObjectType({
+  name: 'connectiontype',
+  fields: () => ({
+    id: {type: GraphQLID},
+    FormalName: {type: GraphQLString},
+    Title: {type: GraphQLString},
+  }),
+});
+
+const currenttypeType = new GraphQLObjectType({
+  name: 'currenttype',
+  fields: () => ({
+    id: {type: GraphQLID},
+    Description: {type: GraphQLString},
+    Title: {type: GraphQLString},
+  }),
+});
+
+const levelType = new GraphQLObjectType({
+  name: 'level',
+  fields: () => ({
+    id: {type: GraphQLID},
+    Comments: {type: GraphQLString},
+    IsFastChargeCapable: {type: GraphQLBoolean},
+    Title: {type: GraphQLString},
+  }),
+});
+
+const stationType = new GraphQLObjectType({
+  name: 'station',
+  fields: () => ({
+    id: {type: GraphQLID},
+    Connections: {
+      type: new GraphQLList(connectionType),
+      resolve(parent, args) {
+        return connection.find({_id: {$in: parent.Connections}});
+      },
+    },
+    Title: {type: GraphQLString},
+    AddressLine1: {type: GraphQLString},
+    Town: {type: GraphQLString},
+    StateOrProvince: {type: GraphQLString},
+    Postcode: {type: GraphQLString},
+    Location: {type: geoJSONType},
+  }),
+});
+
+const connectionType = new GraphQLObjectType({
+  name: 'connection',
+  fields: () => ({
+    id: {type: GraphQLID},
+    ConnectionType: {
+      type: connectiontypeType,
+      resolve(parent, args) {
+        // console.log('parent', parent);
+        return connectiontype.findById(parent.ConnectionTypeID);
+      },
+    },
+    LevelType: {
+      type: levelType,
+      resolve(parent, args) {
+        return level.findById(parent.LevelID);
+      },
+    },
+    CurrentType: {
+      type: currenttypeType,
+      resolve(parent, args) {
+        return currenttype.findById(parent.CurrentTypeID);
+      },
+    },
+    Quantity: {type: GraphQLInt},
+  }),
+});
+
+// custom input object
+const LatLng = new GraphQLInputObjectType({
+  name: 'LatLng',
+  description: 'Object containing latitude and longitude',
+  fields: () => ({
+    lat: {type: GraphQLFloat},
+    lng: {type: GraphQLFloat},
+  }),
+});
+
+// custom input object
+const Bounds = new GraphQLInputObjectType({
+  name: 'Bounds',
+  description: 'Opposite corners of rectangular area on map',
+  fields: () => ({
+    _southWest: {type: LatLng},
+    _northEast: {type: LatLng},
+  }),
+});
+
+// custom input object
+const InputConnection = new GraphQLInputObjectType({
+  name: 'InputConnection',
+  description: 'Connection type, level, current and quantity',
+  fields: () => ({
+    ConnectionTypeID: {type: new GraphQLNonNull(GraphQLID)},
+    LevelID: {type: new GraphQLNonNull(GraphQLID)},
+    CurrentTypeID: {type: new GraphQLNonNull(GraphQLID)},
+    Quantity: {type: new GraphQLNonNull(GraphQLInt)},
+  }),
+});
+
+// custom input object
+const ModifyConnection = new GraphQLInputObjectType({
+  name: 'ModifyConnection',
+  description: 'Connection type, level, current and quantity',
+  fields: () => ({
+    id: {type: new GraphQLNonNull(GraphQLID)},
+    ConnectionTypeID: {type: GraphQLID},
+    LevelID: {type: GraphQLID},
+    CurrentTypeID: {type: GraphQLID},
+    Quantity: {type: GraphQLInt},
+  }),
+});
+
+// custom input object
 const InputGeoJSONType = new GraphQLInputObjectType({
   name: 'Location',
   description: 'Location as array, longitude first',
